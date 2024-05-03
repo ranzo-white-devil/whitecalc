@@ -1,0 +1,361 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <style>
+     * {
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .theme-selector {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 60px;
+      height: 30px;
+      background: #d3d3d3;
+      border-radius: 15px;
+      outline: none;
+      opacity: 0.7;
+      -webkit-transition: 0.2s;
+      transition: opacity 0.2s;
+      margin: 0 10px;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 26px;
+      height: 26px;
+      background: #fff;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 26px;
+      height: 26px;
+      background: #fff;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s;
+    }
+
+    input[type="range"]:focus::-webkit-slider-thumb {
+      box-shadow: 0 0 0 3px #fff, 0 0 0 6px #d3d3d3;
+    }
+
+    input[type="range"]:focus::-moz-range-thumb {
+      box-shadow: 0 0 0 3px #fff, 0 0 0 6px #d3d3d3;
+    }
+
+    .calculator {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 20px;
+      width: 100%;
+      max-width: 400px;
+      display: grid;
+      grid-template-rows: auto auto;
+      row-gap: 10px;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      text-align: right;
+      padding: 10px 20px;
+      font-size: 24px;
+      border: none;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+    }
+
+    button {
+      background-color: #f2f2f2;
+      border: none;
+      padding: 20px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #ddd;
+    }
+
+        /* Dark theme */
+    body.dark {
+      background-color: #000000;
+      color: #ffffff;
+    }
+
+    body.dark .calculator {
+      border-color: #333333;
+      background-color: #1a1a1a;
+    }
+
+    body.dark input[type="text"] {
+      background-color: #1a1a1a;
+      color: white;
+    }
+
+    body.dark button {
+      background-color: grey;
+    }
+
+    body.dark button:hover {
+      background-color: #444444;
+    }
+
+    body.dark input[type="range"] {
+      background: white;
+    }
+
+    body.dark input[type="range"]::-webkit-slider-thumb {
+      background: white;
+    }
+
+    body.dark input[type="range"]::-moz-range-thumb {
+      background: white;
+    }
+
+    /* Grey theme */
+    body.grey {
+      background-color: grey;
+      color:red;
+    }
+
+    body.grey .calculator {
+      border-color: #222222;
+      background-color: ;
+    }
+
+    body.grey input[type="text"] {
+      background-color: #34495e;
+      color: #cccccc;
+    }
+
+    body.grey button {
+      background-color: #222222;
+    }
+
+    body.grey button:hover {
+      background-color: #333333;
+    }
+
+    body.grey input[type="range"] {
+      background: #333333;
+    }
+
+    body.grey input[type="range"]::-webkit-slider-thumb {
+      background: #34495e;
+    }
+
+    body.grey input[type="range"]::-moz-range-thumb {
+      background: red;
+    }
+
+    .history-container {
+      position: relative;
+      width: fit-content;
+    }
+
+    .history-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      z-index: 1;
+      display: none;
+      width: 100%;
+      max-width: 300px;
+      background-color: #f2f2f2;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .history-dropdown.show {
+      display: block;
+    }
+
+    .history-item {
+      padding: 5px 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .history-item:hover {
+      background-color: #ddd;
+    }
+
+    /* Adjust history dropdown for dark and grey themes */
+    body.dark .history-dropdown {
+      background-color: #3a3a3a;
+      border-color: #444;
+    }
+
+    body.dark .history-item {
+      color: #ddd;
+    }
+
+    body.grey .history-dropdown {
+      background-color: #bdc3c7;
+      border-color: #7f8c8d;
+    }
+
+    body.grey .history-item {
+      color: #2c3e50;
+    }
+  </style>
+</head>
+<body>
+  <div class="theme-selector">
+    <input type="range" id="theme-slider" min="0" max="2" value="0" oninput="changeTheme(this.value)">
+  </div>
+  <div class="calculator">
+    <div class="history-container">
+      <button class="history-btn" onclick="toggleHistoryDropdown()">History</button>
+      <div id="history-dropdown" class="history-dropdown">
+      </div>
+    </div>
+    <input type="text" id="display" readonly>
+    <div class="buttons">
+      <button onclick="appendNumber('7')">7</button>
+      <button onclick="appendNumber('8')">8</button>
+      <button onclick="appendNumber('9')">9</button>
+      <button onclick="performOperation('/')">/</button>
+      <button onclick="appendNumber('4')">4</button>
+      <button onclick="appendNumber('5')">5</button>
+      <button onclick="appendNumber('6')">6</button>
+      <button onclick="performOperation('*')">*</button>
+      <button onclick="appendNumber('1')">1</button>
+      <button onclick="appendNumber('2')">2</button>
+      <button onclick="appendNumber('3')">3</button>
+      <button onclick="performOperation('-')">-</button>
+      <button onclick="appendNumber('0')">0</button>
+      <button onclick="clearDisplay()">C</button>
+      <button onclick="calculateResult()">=</button>
+      <button onclick="performOperation('+')">+</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById('display');
+    const themeSlider = document.getElementById('theme-slider');
+    const historyDropdown = document.getElementById('history-dropdown');
+
+    function appendNumber(number) {
+      display.value += number;
+    }
+
+    function clearDisplay() {
+      display.value = '';
+    }
+
+    function performOperation(operation) {
+      display.value += operation;
+    }
+
+    function calculateResult() {
+      try {
+        display.value = eval(display.value);
+        updateHistory();
+      } catch (error) {
+        display.value = 'Error';
+      }
+    }
+
+    function changeTheme(value) {
+      switch (parseInt(value)) {
+        case 0:
+          document.body.className = '';
+          break;
+        case 1:
+          document.body.className = 'grey';
+          break;
+        case 2:
+          document.body.className = 'dark';
+          break;
+      }
+    }
+
+    function toggleHistoryDropdown() {
+      historyDropdown.classList.toggle('show');
+    }
+
+    function updateHistory() {
+      const calculation = display.value;
+      history.unshift(calculation);
+      populateHistoryDropdown();
+      saveHistoryToCookie();
+    }
+
+    function populateHistoryDropdown() {
+      historyDropdown.innerHTML = '';
+      history.forEach((item, index) => {
+        const historyItem = document.createElement('div');
+        historyItem.classList.add('history-item');
+        historyItem.textContent = item;
+        historyItem.addEventListener('click', () => {
+          display.value = item;
+          toggleHistoryDropdown();
+        });
+        historyDropdown.appendChild(historyItem);
+      });
+    }
+
+    function loadHistoryFromCookie() {
+      const cookieHistory = decodeURIComponent(document.cookie.replace(/(?:(?:^|.*;\s*)history\s*\=\s*([^;]*).*$)|^.*$/, '$1'));
+      try {
+        return cookieHistory ? JSON.parse(cookieHistory) : [];
+      } catch (error) {
+        console.error('Error parsing history from cookie:', error);
+        return [];
+      }
+    }
+
+    function saveHistoryToCookie() {
+      document.cookie = `history=${encodeURIComponent(JSON.stringify(history))}; expires=${new Date(Date.now() + 31536000000).toUTCString()}; path=/`;
+    }
+
+    // Close the history dropdown if the user clicks outside of it
+    window.onclick = function(event) {
+      if (!event.target.matches('.history-btn') && !event.target.matches('.history-item')) {
+        historyDropdown.classList.remove('show');
+      }
+    };
+
+    // Load history from cookie and populate the dropdown
+    let history = loadHistoryFromCookie();
+    populateHistoryDropdown();
+  </script>
+</body>
+</html>
